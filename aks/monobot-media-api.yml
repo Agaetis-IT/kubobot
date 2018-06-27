@@ -22,3 +22,15 @@ spec:
             memory: 512M
           requests:
             memory: 512M
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: monobot-media-api-service
+spec:
+  type: LoadBalancer
+  selector:
+    app: monobot-media-api
+  ports:
+  - port: 80
+    targetPort: 8080
