@@ -34,3 +34,17 @@ spec:
   ports:
   - port: 80
     targetPort: 8080
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: monobot-media-api-ingress
+spec:
+  rules: 
+  - host: api.monobot.fr
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: monobot-media-api-service
+          servicePort: 80
