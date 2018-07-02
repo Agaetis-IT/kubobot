@@ -17,6 +17,17 @@ spec:
       containers:
       - name: monobot-media-api
         image: agaetisit/monobot-media-api:latest
+        env:
+        - name: FLICKR_API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: flickr-api
+              key: flickr.api.key.txt
+        - name: FLICKR_API_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: flickr-api
+              key: flickr.api.secret.txt
         resources:
           limits:
             memory: 512M
