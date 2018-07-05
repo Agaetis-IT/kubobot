@@ -1,22 +1,22 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: monobot-media-api-deployment
+  name: mediobot-deployment
   labels: 
-    app: monobot-media-api
+    app: mediobot
 spec:
   replicas: 2
   selector:
     matchLabels:
-      app: monobot-media-api
+      app: mediobot
   template:
     metadata:
       labels:
-        app: monobot-media-api
+        app: mediobot
     spec:
       containers:
-      - name: monobot-media-api
-        image: agaetisit/monobot-media-api:latest
+      - name: mediobot
+        image: agaetisit/mediobot:latest
         env:
         - name: FLICKR_API_KEY
           valueFrom:
@@ -37,11 +37,11 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: monobot-media-api-service
+  name: mediobot-service
 spec:
   type: LoadBalancer
   selector:
-    app: monobot-media-api
+    app: mediobot
   ports:
   - port: 80
     targetPort: 8080
@@ -49,13 +49,15 @@ spec:
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
-  name: monobot-media-api-ingress
+  name: mediobot-ingress
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
 spec:
   rules: 
-  - host: api.monobot.fr
+  - host: monobot.fr
     http:
       paths:
-      - path: /
+      - path: /api
         backend:
-          serviceName: monobot-media-api-service
+          serviceName: mediobot-service
           servicePort: 80

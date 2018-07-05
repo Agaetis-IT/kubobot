@@ -4,7 +4,7 @@ All the resources to deploy **Monobot** into a Kubernetes cluster and especially
 
 This project is split into several folders :
   - aks-scripts : _Bash scripts used to access Azure Kubernetes Service management_
-  - monobot-media-api : _Kubernetes resources for the [Monobot Media API service](https://github.com/Agaetis-IT/monobot-media-api)_
+  - mediobot : _Kubernetes resources for the [Mediobot service](https://github.com/Agaetis-IT/mediobot)_
 
 ## Getting started
 TO DO
