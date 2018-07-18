@@ -1,0 +1,1 @@
+kubectl config use-context monobot-aks

@@ -22,12 +22,19 @@ spec:
           valueFrom:
             secretKeyRef:
               name: flickr-api
-              key: flickr.api.key.txt
+              key: flickr.api.key
         - name: FLICKR_API_SECRET
           valueFrom:
             secretKeyRef:
               name: flickr-api
-              key: flickr.api.secret.txt
+              key: flickr.api.secret
+        - name: spring.data.mongodb.username
+          value: mediobot-admin
+        - name: spring.data.mongodb.password
+          valueFrom:
+            secretKeyRef:
+              name: mongo
+              key: mongodb-password
         resources:
           limits:
             memory: 512M
@@ -51,13 +58,19 @@ kind: Ingress
 metadata:
   name: mediobot-ingress
   annotations:
-    nginx.ingress.kubernetes.io/rewrite-target: /
+    ingress.kubernetes.io/ssl-redirect: "true"
+    kubernetes.io/tls-acme: "true"
+    certmanager.k8s.io/issuer: mediobot-issuer-prod
 spec:
-  rules: 
-  - host: monobot.fr
+  tls:
+  - hosts:
+    - mediobot.monobot.fr
+    secretName: mediobot-certificate-prod
+  rules:
+  - host: mediobot.monobot.fr
     http:
       paths:
-      - path: /api
+      - path: /
         backend:
           serviceName: mediobot-service
           servicePort: 80
