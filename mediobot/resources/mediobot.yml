@@ -1,3 +1,31 @@
+kind: StorageClass
+apiVersion: storage.k8s.io/v1
+metadata:
+  name: picturestorage-storageclass
+provisioner: kubernetes.io/azure-file
+mountOptions:
+  - dir_mode=0777
+  - file_mode=0777
+  - uid=1000
+  - gid=1000
+parameters:
+  skuName: Standard_LRS
+allowVolumeExpansion: true
+---
+
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: picturestorage-pvc
+spec:
+  accessModes:
+    - ReadWriteMany
+  storageClassName: picturestorage-storageclass
+  resources:
+    requests:
+      storage: 2Gi
+---
+
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -40,7 +68,15 @@ spec:
             memory: 512M
           requests:
             memory: 512M
+        volumeMounts:
+          - mountPath: "/pictures"
+            name: picturestorage
+      volumes:
+        - name: picturestorage
+          persistentVolumeClaim:
+            claimName: picturestorage-pvc
 ---
+
 apiVersion: v1
 kind: Service
 metadata:
@@ -53,6 +89,7 @@ spec:
   - port: 80
     targetPort: 8080
 ---
+
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
