@@ -111,3 +111,26 @@ spec:
         backend:
           serviceName: mediobot-service
           servicePort: 80
+---
+
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: retrieve-media-pictures-job
+spec:
+  schedule: "0 2 * * *"
+  jobTemplate:
+    spec:
+      template:
+        metadata:
+          labels:
+            app: retrieve-media-pictures-job
+        spec:
+          containers:
+            - name: retrieve-media-pictures-job
+              image: buildpack-deps:curl
+              args:
+              - /bin/sh
+              - -ec
+              - curl https://mediobot.monobot.fr/pictures
+          restartPolicy: Never
