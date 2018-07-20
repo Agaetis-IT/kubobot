@@ -132,5 +132,5 @@ spec:
               args:
               - /bin/sh
               - -ec
-              - curl https://mediobot.monobot.fr/pictures
+              - curl -X POST https://mediobot.monobot.fr/pictures/media
           restartPolicy: Never
