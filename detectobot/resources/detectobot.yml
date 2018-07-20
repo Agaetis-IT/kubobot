@@ -1,0 +1,85 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: detectobot-deployment
+  labels: 
+    app: detectobot
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: detectobot
+  template:
+    metadata:
+      labels:
+        app: detectobot
+    spec:
+      containers:
+      - name: detectobot
+        image: agaetisit/detectobot:latest
+        volumeMounts:
+          - mountPath: "/pictures"
+            name: picturestorage
+      volumes:
+        - name: picturestorage
+          persistentVolumeClaim:
+            claimName: picturestorage-pvc
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: detectobot-service
+spec:
+  type: LoadBalancer
+  selector:
+    app: detectobot
+  ports:
+  - port: 80
+    targetPort: 8080
+---
+
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: detectobot-ingress
+  annotations:
+    ingress.kubernetes.io/ssl-redirect: "true"
+    kubernetes.io/tls-acme: "true"
+    certmanager.k8s.io/issuer: mediobot-issuer-prod
+spec:
+  tls:
+  - hosts:
+    - detectobot.monobot.fr
+    secretName: detectobot-certificate-prod
+  rules:
+  - host: detectobot.monobot.fr
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: detectobot-service
+          servicePort: 80
+---
+
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: retrieve-media-pictures-job
+spec:
+  schedule: "0 2 * * *"
+  jobTemplate:
+    spec:
+      template:
+        metadata:
+          labels:
+            app: retrieve-media-pictures-job
+        spec:
+          containers:
+            - name: retrieve-media-pictures-job
+              image: buildpack-deps:curl
+              args:
+              - /bin/sh
+              - -ec
+              - curl https://mediobot.monobot.fr/pictures
+          restartPolicy: Never
