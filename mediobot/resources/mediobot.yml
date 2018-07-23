@@ -1,36 +1,40 @@
-kind: StorageClass
-apiVersion: storage.k8s.io/v1
+apiVersion: certmanager.k8s.io/v1alpha1
+kind: Certificate
 metadata:
-  name: picturestorage-storageclass
-provisioner: kubernetes.io/azure-file
-mountOptions:
-  - dir_mode=0777
-  - file_mode=0777
-  - uid=1000
-  - gid=1000
-parameters:
-  skuName: Standard_LRS
-allowVolumeExpansion: true
+  name: mediobot-certificate-prod
+spec:
+  secretName: mediobot-certificate-prod
+  issuerRef:
+    name: mediobot-issuer-prod
+    kind: Issuer
+  dnsNames:
+  - monobot-ingress.eastus.cloudapp.azure.com
+  acme:
+    config:
+    - http01:
+        ingress: mediobot-ingress
+      domains:
+      - mediobot.monobot.fr
 ---
 
-apiVersion: v1
-kind: PersistentVolumeClaim
+apiVersion: certmanager.k8s.io/v1alpha1
+kind: Issuer
 metadata:
-  name: picturestorage-pvc
+  name: mediobot-issuer-prod
 spec:
-  accessModes:
-    - ReadWriteMany
-  storageClassName: picturestorage-storageclass
-  resources:
-    requests:
-      storage: 2Gi
+  acme:
+    server: https://acme-v02.api.letsencrypt.org/directory
+    email: ppironin@agaetis.fr
+    privateKeySecretRef:
+      name: mediobot-issuer-prod
+    http01: {}
 ---
 
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: mediobot-deployment
-  labels: 
+  labels:
     app: mediobot
 spec:
   replicas: 1
@@ -75,6 +79,7 @@ spec:
         - name: picturestorage
           persistentVolumeClaim:
             claimName: picturestorage-pvc
+
 ---
 
 apiVersion: v1

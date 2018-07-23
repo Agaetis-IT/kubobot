@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: mongo-deployment
-  labels: 
+  labels:
     app: mongo
 spec:
   replicas: 1
