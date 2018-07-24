@@ -1,8 +1,27 @@
+apiVersion: certmanager.k8s.io/v1alpha1
+kind: Certificate
+metadata:
+  name: detectobot-certificate-prod
+spec:
+  secretName: detectobot-certificate-prod
+  issuerRef:
+    name: letsencrypt-prod
+    kind: ClusterIssuer
+  dnsNames:
+  - monobot-ingress.eastus.cloudapp.azure.com
+  acme:
+    config:
+    - http01:
+        ingress: detectobot.monobot.fr
+      domains:
+      - detectobot.monobot.fr
+---
+
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: detectobot-deployment
-  labels: 
+  labels:
     app: detectobot
 spec:
   replicas: 1
@@ -18,7 +37,7 @@ spec:
       - name: detectobot
         image: agaetisit/detectobot:latest
         volumeMounts:
-          - mountPath: "/pictures"
+          - mountPath: "/input"
             name: picturestorage
       volumes:
         - name: picturestorage
@@ -36,7 +55,7 @@ spec:
     app: detectobot
   ports:
   - port: 80
-    targetPort: 8080
+    targetPort: 5000
 ---
 
 apiVersion: extensions/v1beta1
@@ -46,7 +65,7 @@ metadata:
   annotations:
     ingress.kubernetes.io/ssl-redirect: "true"
     kubernetes.io/tls-acme: "true"
-    certmanager.k8s.io/issuer: mediobot-issuer-prod
+    certmanager.k8s.io/cluster-issuer: letsencrypt-prod
 spec:
   tls:
   - hosts:
@@ -60,26 +79,3 @@ spec:
         backend:
           serviceName: detectobot-service
           servicePort: 80
----
-
-apiVersion: batch/v1beta1
-kind: CronJob
-metadata:
-  name: retrieve-media-pictures-job
-spec:
-  schedule: "0 2 * * *"
-  jobTemplate:
-    spec:
-      template:
-        metadata:
-          labels:
-            app: retrieve-media-pictures-job
-        spec:
-          containers:
-            - name: retrieve-media-pictures-job
-              image: buildpack-deps:curl
-              args:
-              - /bin/sh
-              - -ec
-              - curl https://mediobot.monobot.fr/pictures
-          restartPolicy: Never
