@@ -54,6 +54,12 @@ spec:
             secretKeyRef:
               name: mongo
               key: mongodb-password
+        - name: detectobot.baseurl
+          value: https://detectobot.monobot.fr
+        - name: detectobot.version
+          value: v0.1
+        - name: flickr.maxPicturesPerGroup
+          value: "550"
         resources:
           limits:
             memory: 512M
@@ -124,5 +130,5 @@ spec:
               args:
               - /bin/sh
               - -ec
-              - curl -X POST https://mediobot.monobot.fr/pictures/media
+              - curl -X POST https://mediobot.monobot.fr/picture/media/retrieve
           restartPolicy: Never
