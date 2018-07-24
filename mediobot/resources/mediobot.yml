@@ -116,7 +116,7 @@ kind: CronJob
 metadata:
   name: retrieve-media-pictures-job
 spec:
-  schedule: "0 2 * * *"
+  schedule: "0 1 * * *"
   jobTemplate:
     spec:
       template:
@@ -131,4 +131,27 @@ spec:
               - /bin/sh
               - -ec
               - curl -X POST https://mediobot.monobot.fr/picture/media/retrieve
+          restartPolicy: Never
+---
+
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: trigger-pictures-detection-job
+spec:
+  schedule: "0 3 * * *"
+  jobTemplate:
+    spec:
+      template:
+        metadata:
+          labels:
+            app: trigger-pictures-detection-job
+        spec:
+          containers:
+            - name: trigger-pictures-detection-job
+              image: buildpack-deps:curl
+              args:
+              - /bin/sh
+              - -ec
+              - curl -X POST https://mediobot.monobot.fr/picture/detection/trigger
           restartPolicy: Never
