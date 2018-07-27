@@ -60,6 +60,8 @@ spec:
           value: v0.1
         - name: flickr.maxPicturesPerGroup
           value: "-1"
+        #- name: logging.level.fr.agaetis
+        #  value: DEBUG
         resources:
           limits:
             memory: 512M
