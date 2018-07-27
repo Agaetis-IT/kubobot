@@ -59,7 +59,7 @@ spec:
         - name: detectobot.version
           value: v0.1
         - name: flickr.maxPicturesPerGroup
-          value: "-1"
+          value: "200"
         #- name: logging.level.fr.agaetis
         #  value: DEBUG
         resources:
