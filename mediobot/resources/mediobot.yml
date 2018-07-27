@@ -59,7 +59,7 @@ spec:
         - name: detectobot.version
           value: v0.1
         - name: flickr.maxPicturesPerGroup
-          value: "550"
+          value: "-1"
         resources:
           limits:
             memory: 512M
