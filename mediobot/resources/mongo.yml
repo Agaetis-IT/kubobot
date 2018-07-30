@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: mongo
-        image: bitnami/mongodb:3.6
+        image: bitnami/mongodb:3.6.6-r15
         volumeMounts:
           - mountPath: /bitnami
             name: mongo-volume

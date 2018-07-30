@@ -16,7 +16,7 @@ allowVolumeExpansion: true
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: picturestorage-pvc
+  name: pictures-pvc
 spec:
   accessModes:
     - ReadWriteMany

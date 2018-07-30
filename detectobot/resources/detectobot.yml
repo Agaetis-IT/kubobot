@@ -1,22 +1,3 @@
-apiVersion: certmanager.k8s.io/v1alpha1
-kind: Certificate
-metadata:
-  name: detectobot-certificate-prod
-spec:
-  secretName: detectobot-certificate-prod
-  issuerRef:
-    name: letsencrypt-prod
-    kind: ClusterIssuer
-  dnsNames:
-  - monobot-ingress.eastus.cloudapp.azure.com
-  acme:
-    config:
-    - http01:
-        ingress: detectobot.monobot.fr
-      domains:
-      - detectobot.monobot.fr
----
-
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -38,16 +19,16 @@ spec:
         image: agaetisit/detectobot:latest
         resources:
           limits:
-            memory: 1G
+            memory: 2G
           requests:
-            memory: 1G
+            memory: 2G
         volumeMounts:
           - mountPath: "/input"
             name: picturestorage
       volumes:
         - name: picturestorage
           persistentVolumeClaim:
-            claimName: picturestorage-pvc
+            claimName: pictures-pvc
 ---
 
 apiVersion: v1
@@ -67,15 +48,7 @@ apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
   name: detectobot-ingress
-  annotations:
-    ingress.kubernetes.io/ssl-redirect: "true"
-    kubernetes.io/tls-acme: "true"
-    certmanager.k8s.io/cluster-issuer: letsencrypt-prod
 spec:
-  tls:
-  - hosts:
-    - detectobot.monobot.fr
-    secretName: detectobot-certificate-prod
   rules:
   - host: detectobot.monobot.fr
     http:

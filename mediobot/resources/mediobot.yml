@@ -1,22 +1,3 @@
-apiVersion: certmanager.k8s.io/v1alpha1
-kind: Certificate
-metadata:
-  name: mediobot-certificate-prod
-spec:
-  secretName: mediobot-certificate-prod
-  issuerRef:
-    name: letsencrypt-prod
-    kind: ClusterIssuer
-  dnsNames:
-  - monobot-ingress.eastus.cloudapp.azure.com
-  acme:
-    config:
-    - http01:
-        ingress: detectobot-ingress
-      domains:
-      - mediobot.monobot.fr
----
-
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -55,7 +36,7 @@ spec:
               name: mongo
               key: mongodb-password
         - name: detectobot.baseurl
-          value: https://detectobot.monobot.fr
+          value: http://detectobot.monobot.fr
         - name: detectobot.version
           value: v0.1
         - name: flickr.maxPicturesPerGroup
@@ -73,7 +54,7 @@ spec:
       volumes:
         - name: picturestorage
           persistentVolumeClaim:
-            claimName: picturestorage-pvc
+            claimName: pictures-pvc
 
 ---
 
@@ -94,16 +75,8 @@ apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
   name: mediobot-ingress
-  annotations:
-    ingress.kubernetes.io/ssl-redirect: "true"
-    kubernetes.io/tls-acme: "true"
-    certmanager.k8s.io/cluster-issuer: letsencrypt-prod
 spec:
-  tls:
-  - hosts:
-    - mediobot.monobot.fr
-    secretName: mediobot-certificate-prod
-  rules:
+  rules :
   - host: mediobot.monobot.fr
     http:
       paths:
@@ -132,7 +105,7 @@ spec:
               args:
               - /bin/sh
               - -ec
-              - curl -X POST https://mediobot.monobot.fr/picture/media/retrieve
+              - curl -X POST http://mediobot.monobot.fr/picture/media/retrieve
           restartPolicy: Never
 ---
 
@@ -155,5 +128,5 @@ spec:
               args:
               - /bin/sh
               - -ec
-              - curl -X POST https://mediobot.monobot.fr/picture/detection/trigger
+              - curl -X POST http://mediobot.monobot.fr/picture/detection/trigger
           restartPolicy: Never
