@@ -3,15 +3,13 @@ kind: Certificate
 metadata:
   name: detectobot-certificate-prod
 spec:
-  secretName: detectobot-certificate-prod
+  secretName: detectobot-certificate-prod-tls
   issuerRef:
-    name: letsencrypt-prod
+    name: letsencrypt-prod-cluster-issuer
     kind: ClusterIssuer
-  dnsNames:
-  - monobot-aks-ingress.eastus.cloudapp.azure.com
+  commonName: detectobot.monobot.fr
   acme:
     config:
-    - http01:
-        ingressClass: addon-http-application-routing
+    - http01: {}
       domains:
       - detectobot.monobot.fr

@@ -1,0 +1,15 @@
+apiVersion: certmanager.k8s.io/v1alpha1
+kind: Certificate
+metadata:
+  name: detectobot-certificate-staging
+spec:
+  secretName: detectobot-certificate-staging-tls
+  issuerRef:
+    name: letsencrypt-staging-cluster-issuer
+    kind: ClusterIssuer
+  commonName: detectobot.monobot.fr
+  acme:
+    config:
+    - http01: {}
+      domains:
+      - detectobot.monobot.fr

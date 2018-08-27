@@ -75,7 +75,14 @@ apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
   name: mediobot-ingress
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    ingress.kubernetes.io/ssl-redirect: "true"
 spec:
+  tls:
+  - hosts:
+    - mediobot.monobot.fr
+    secretName: mediobot-certificate-prod-tls
   rules :
   - host: mediobot.monobot.fr
     http:
@@ -105,7 +112,7 @@ spec:
               args:
               - /bin/sh
               - -ec
-              - curl -X POST http://mediobot.monobot.fr/picture/media/retrieve
+              - curl -X POST https://mediobot.monobot.fr/picture/media/retrieve
           restartPolicy: Never
 ---
 
@@ -128,5 +135,5 @@ spec:
               args:
               - /bin/sh
               - -ec
-              - curl -X POST http://mediobot.monobot.fr/picture/detection/trigger
+              - curl -X POST https://mediobot.monobot.fr/picture/detection/trigger
           restartPolicy: Never

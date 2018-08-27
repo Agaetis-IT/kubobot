@@ -1,0 +1,15 @@
+apiVersion: certmanager.k8s.io/v1alpha1
+kind: Certificate
+metadata:
+  name: webobot-certificate-staging
+spec:
+  secretName: webobot-certificate-staging-tls
+  issuerRef:
+    name: letsencrypt-staging-cluster-issuer
+    kind: ClusterIssuer
+  commonName: monobot.fr
+  acme:
+    config:
+    - http01: {}
+      domains:
+      - monobot.fr

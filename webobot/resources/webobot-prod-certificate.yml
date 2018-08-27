@@ -3,15 +3,13 @@ kind: Certificate
 metadata:
   name: webobot-certificate-prod
 spec:
-  secretName: webobot-certificate-prod
+  secretName: webobot-certificate-prod-tls
   issuerRef:
-    name: letsencrypt-prod
+    name: letsencrypt-prod-cluster-issuer
     kind: ClusterIssuer
-  dnsNames:
-  - monobot-ingress.eastus.cloudapp.azure.com
+  commonName: monobot.fr
   acme:
     config:
-    - http01:
-        ingress: monobot.fr
+    - http01: {}
       domains:
       - monobot.fr

@@ -3,15 +3,13 @@ kind: Certificate
 metadata:
   name: mediobot-certificate-prod
 spec:
-  secretName: mediobot-certificate-prod
+  secretName: mediobot-certificate-prod-tls
   issuerRef:
-    name: letsencrypt-prod
+    name: letsencrypt-prod-cluster-issuer
     kind: ClusterIssuer
-  dnsNames:
-  - monobot-ingress.eastus.cloudapp.azure.com
+  commonName: mediobot.monobot.fr
   acme:
     config:
-    - http01:
-        ingress: detectobot-ingress
+    - http01: {}
       domains:
       - mediobot.monobot.fr
