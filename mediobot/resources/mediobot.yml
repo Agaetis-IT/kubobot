@@ -99,6 +99,7 @@ metadata:
   name: retrieve-media-pictures-job
 spec:
   schedule: "0 1 * * *"
+  successfulJobsHistoryLimit: 1
   jobTemplate:
     spec:
       template:
@@ -122,6 +123,7 @@ metadata:
   name: trigger-pictures-detection-job
 spec:
   schedule: "0 3 * * *"
+  successfulJobsHistoryLimit: 1
   jobTemplate:
     spec:
       template:
