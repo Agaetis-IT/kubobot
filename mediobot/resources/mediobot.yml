@@ -36,7 +36,7 @@ spec:
               name: mongo
               key: mongodb-password
         - name: detectobot.baseurl
-          value: https://detectobot.monobot.fr
+          value: http://detectobot-service.monobot-prod
         - name: detectobot.version
           value: v0.1
         - name: flickr.maxPicturesPerGroup
