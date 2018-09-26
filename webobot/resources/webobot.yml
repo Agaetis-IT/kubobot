@@ -37,23 +37,18 @@ spec:
     targetPort: 3000
 ---
 
-apiVersion: extensions/v1beta1
-kind: Ingress
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
 metadata:
-  name: webobot-ingress
-  annotations:
-    kubernetes.io/ingress.class: nginx
-    ingress.kubernetes.io/ssl-redirect: "true"
+  name: webobot-virtualservice
 spec:
-  tls:
-  - hosts:
-    - monobot.fr
-    secretName: webobot-certificate-prod-tls
-  rules:
-  - host: monobot.fr
-    http:
-      paths:
-      - path: /
-        backend:
-          serviceName: webobot-service
-          servicePort: 80
+  gateways:
+  - monobot-gateway
+  hosts:
+  - monobot.fr
+  http:
+  - route:
+    - destination:
+        host: webobot-service
+        port:
+          number: 80

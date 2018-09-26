@@ -1,13 +1,17 @@
 apiVersion: certmanager.k8s.io/v1alpha1
 kind: Certificate
 metadata:
-  name: webobot-certificate-staging
+  name: monobot-certificate-staging
+  namespace: istio-system
 spec:
-  secretName: webobot-certificate-staging-tls
+  secretName: istio-ingressgateway-certs-staging
   issuerRef:
     name: letsencrypt-staging-cluster-issuer
     kind: ClusterIssuer
   commonName: monobot.fr
+  dnsNames:
+  - monobot.fr
+  - mediobot.monobot.fr
   acme:
     config:
     - http01: {}

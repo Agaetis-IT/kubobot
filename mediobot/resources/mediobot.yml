@@ -71,26 +71,21 @@ spec:
     targetPort: 8080
 ---
 
-apiVersion: extensions/v1beta1
-kind: Ingress
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
 metadata:
-  name: mediobot-ingress
-  annotations:
-    kubernetes.io/ingress.class: nginx
-    ingress.kubernetes.io/ssl-redirect: "true"
+  name: mediobot-virtualservice
 spec:
-  tls:
-  - hosts:
-    - mediobot.monobot.fr
-    secretName: mediobot-certificate-prod-tls
-  rules :
-  - host: mediobot.monobot.fr
-    http:
-      paths:
-      - path: /
-        backend:
-          serviceName: mediobot-service
-          servicePort: 80
+  gateways:
+  - monobot-gateway
+  hosts:
+  - mediobot.monobot.fr
+  http:
+  - route:
+    - destination:
+        host: mediobot-service
+        port:
+          number: 80
 ---
 
 apiVersion: batch/v1beta1

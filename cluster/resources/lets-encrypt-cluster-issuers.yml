@@ -14,11 +14,30 @@ spec:
 apiVersion: certmanager.k8s.io/v1alpha1
 kind: ClusterIssuer
 metadata:
-  name: letsencrypt-prod-cluster-issuer
+  name: letsencrypt-prod-cluster-issuer-azure
 spec:
   acme:
     server: https://acme-v02.api.letsencrypt.org/directory
     email: ppironin@agaetis.fr
     privateKeySecretRef:
-      name: letsencrypt-prod
-    http01: {}
+      name: letsencrypt-prod-azure
+    dns01:
+      providers:
+        - name: azure-dns-provider
+          azuredns:
+            # Service principal clientId (also called appId)
+            clientID: 4ef8fc23-42fd-4136-8c50-b8f46fb5566b
+            # A secretKeyRef to a service principal ClientSecret (password)
+            # ref: https://docs.microsoft.com/en-us/azure/container-service/kubernetes/container-service-kubernetes-service-principal
+            clientSecretSecretRef:
+              name: azuredns-config
+              key: client-secret
+            # Azure subscription Id
+            subscriptionID: 4aea99db-397a-45e5-a508-e6e06db77164
+            # Azure AD tenant Id
+            tenantID: b63de7b7-6650-4cdf-92c6-c53310d836a1
+            # ResourceGroup name where dns zone is provisioned
+            resourceGroupName: monobot-rg
+            # Name of the hosted zone, if ommited it will be computed from domain provided during certificate creation
+            # hosted zone name is always part of domain name from certificate request
+            hostedZoneName: monobot.fr

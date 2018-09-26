@@ -1,0 +1,21 @@
+apiVersion: certmanager.k8s.io/v1alpha1
+kind: Certificate
+metadata:
+  name: monobot-ingress-certs
+  namespace: istio-system
+spec:
+  acme:
+    config:
+    - dns01:
+        provider: azure-dns-provider
+      domains:
+      - monobot.fr
+      - mediobot.monobot.fr
+  commonName: monobot.fr
+  dnsNames:
+  - monobot.fr
+  - mediobot.monobot.fr
+  issuerRef:
+    name: letsencrypt-prod-cluster-issuer-azure
+    kind: ClusterIssuer
+  secretName: istio-ingressgateway-certs
