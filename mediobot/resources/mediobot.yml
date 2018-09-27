@@ -88,6 +88,56 @@ spec:
           number: 80
 ---
 
+apiVersion: networking.istio.io/v1alpha3
+kind: ServiceEntry
+metadata:
+  name: flickr
+spec:
+  hosts:
+  - "*.staticflickr.com"
+  ports:
+  - number: 80
+    name: http
+    protocol: HTTP
+  resolution: DNS
+  location: MESH_EXTERNAL
+---
+
+apiVersion: networking.istio.io/v1alpha3
+kind: ServiceEntry
+metadata:
+  name: flickr-api
+spec:
+  hosts:
+  - api.flickr.com
+  ports:
+  - number: 443
+    name: https
+    protocol: HTTPS
+  resolution: DNS
+  location: MESH_EXTERNAL
+---
+
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: flickr-api
+spec:
+  hosts:
+  - api.flickr.com
+  tls:
+  - match:
+    - port: 443
+      sni_hosts:
+      - api.flickr.com
+    route:
+    - destination:
+        host: api.flickr.com
+        port:
+          number: 443
+      weight: 100
+---
+
 apiVersion: batch/v1beta1
 kind: CronJob
 metadata:
